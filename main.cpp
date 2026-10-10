@@ -1,5 +1,3 @@
-// CSC316 - Homework 2: Vigenere Cipher
-// Charbel Chidiac
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -16,7 +14,6 @@ string readLine(const string& prompt) {
     return line;
 }
 
-// An order such as 3 1 2 means: take the third, first, then second item.
 vector<int> readOrder(const string& prompt) {
     istringstream input(readLine(prompt));
     vector<int> order;
@@ -33,11 +30,10 @@ vector<int> readOrder(const string& prompt) {
     for (size_t i = 0; i < sorted.size(); ++i)
         if (sorted[i] != static_cast<int>(i + 1))
             throw runtime_error("Order must contain 1 through N exactly once.");
-    for (int& item : order) --item; // Use zero-based positions internally.
+    for (int& item : order) --item;
     return order;
 }
 
-// Shift English letters only; keep their case and leave other characters intact.
 string vigenere(string text, const string& key, bool decrypt) {
     size_t keyIndex = 0;
     for (char& ch : text) {
@@ -53,8 +49,6 @@ string vigenere(string text, const string& key, bool decrypt) {
     return text;
 }
 
-// Fill each grid left to right, then read it in the selected row/column order.
-// Missing cells in the final block are skipped, so no padding is necessary.
 string permute(const string& text, const vector<int>& rowOrder,
                const vector<int>& colOrder, char round, bool decrypt) {
     string result = text;
@@ -88,7 +82,6 @@ int main() {
         string text = readLine(decrypt ? "Ciphertext (include outer quotes): "
                                        : "Plaintext: ");
         if (decrypt) {
-            // quoted() reverses the escaping printed by the encryption output.
             istringstream input(text);
             if (text.empty() || text.front() != '"' || !(input >> quoted(text)))
                 throw runtime_error("Paste the complete quoted ciphertext.");
@@ -122,7 +115,6 @@ int main() {
             }
             cout << "Final ciphertext: " << quoted(text) << '\n';
         } else {
-            // Undo the last permutation first, then undo Vigenere substitution.
             for (auto it = rounds.rbegin(); it != rounds.rend(); ++it) {
                 text = permute(text, rowOrder, colOrder, *it, true);
                 cout << "After undoing " << *it << ": " << quoted(text) << '\n';
